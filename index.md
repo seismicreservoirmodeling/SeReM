@@ -1,4 +1,4 @@
-### Seismic Reservoir Modeling (SeReM) MATLAB package
+## Seismic Reservoir Modeling (SeReM) MATLAB package
 
 ### Code
 You can access the code at

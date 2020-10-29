@@ -1,5 +1,8 @@
 ### Seismic Reservoir Modeling (SeReM) MATLAB package
 
+You can access the code at
+<a href="https://github.com/seismicreservoirmodeling/SeReM"> github.com/seismicreservoirmodeling/SeReM </a>
+
 <img src="Cover.jpg" alt="Book cover">
 
 ### Reference

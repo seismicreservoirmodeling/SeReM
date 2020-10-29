@@ -8,3 +8,6 @@ The SeReM package includes five folders:
 -	Inversion: this folder contains functions for seismic and rock physics inversion using the analytical and numerical solutions described in Chapter 5; the functions are subdivided into three subfolders: Seismic, Petrophysical, and EnsembleSmoother;
 -	Facies: this folder contains functions for facies classification and simulation described in Chapter 6.
 The SeReM package includes multiple scripts with several examples. 
+
+For a detailed description, we refer to
+Grana D., Mukerji, T., and Doyen, P., 2020, Seismic reservoir modeling: Wiley.

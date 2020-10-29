@@ -1,3 +1,5 @@
+## SeReM
+
 ### Code
 You can access the code at
 <a href="https://github.com/seismicreservoirmodeling/SeReM"> github.com/seismicreservoirmodeling/SeReM </a>

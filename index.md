@@ -11,4 +11,4 @@ You can access the PYTHON code at
 
 ### Reference
 
-Grana, D., Mukerji, T., and Doyen, P., 2020, Seismic Reservoir Modeling: Wiley. 
+Grana, D., Mukerji, T., and Doyen, P., 2020, Seismic Reservoir Modeling: Wiley Blackwell (in press). 

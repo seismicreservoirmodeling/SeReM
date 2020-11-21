@@ -168,7 +168,7 @@ hbc=colorbar; title(hbc, 'Probability');
 % The joint Gaussian mixture distribution is estimated from the training dataset
 [~, ~, ~, Ppost] = RockPhysicsGaussMixInversion(Facies, mtrain, dtrain, mdomain, dcond, sigmaerr);
 % The joint Gaussian distribution can also be used
-% [mupost, sigmapost, Ppost] = RockPhysicsGaussInversion(mtrain, dtrain, mdomain, mcond, sigmaerr);
+% [mupost, sigmapost, Ppost] = RockPhysicsGaussInversion(mtrain, dtrain, mdomain, dcond, sigmaerr);
 
 % marginal posterior distributions
 Ppostphi = zeros(ns,length(phidomain));

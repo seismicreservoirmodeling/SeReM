@@ -108,7 +108,6 @@ niter = 4;
 alpha = 1/niter;  % sum alpha = 1
 PriorModels = [Vpsim; Vssim; Rhosim];
 SeisData = [Snear; Smid; Sfar];
-SeisPred = zeros(nd*ntheta, nsim);
 PostModels = PriorModels;
 for j=1:niter
     [PostModels, KalmanGain] = EnsembleSmootherMDA(PostModels, SeisData, SeisPred, alpha, sigmaerr);

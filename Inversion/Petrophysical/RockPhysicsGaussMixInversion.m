@@ -19,7 +19,7 @@ function [mupost, sigmapost, pfpost, Ppost]  = RockPhysicsGaussMixInversion(ftra
 
 % initial parameters
 nv = size(mtrain, 2);
-nd = size(mtrain, 2);
+nd = size(dtrain, 2);
 nf = max(unique(ftrain));
 ns = size(dcond,1);
 datatrain = [mtrain dtrain];

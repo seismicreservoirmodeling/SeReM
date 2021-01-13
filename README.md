@@ -10,4 +10,4 @@ The SeReM package includes five folders:
 The SeReM package includes multiple scripts with several examples. 
 
 For a detailed description, we refer to
-Grana, D., Mukerji, T., and Doyen, P., 2020, Seismic reservoir modeling: Wiley.
+Grana, D., Mukerji, T., and Doyen, P., 2021, Seismic reservoir modeling: Wiley.

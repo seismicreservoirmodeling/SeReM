@@ -17,7 +17,7 @@ switch type
     case 'exp'
         C = ExpCov(h, RadialCorrLength(lmin, lmax, azim, theta));    
     case 'gau'
-        C = GauGov(h, RadialCorrLength(lmin, lmax, azim, theta));
+        C = GauCov(h, RadialCorrLength(lmin, lmax, azim, theta));
     case 'sph'
         C = SphCov(h, RadialCorrLength(lmin, lmax, azim, theta));
 end

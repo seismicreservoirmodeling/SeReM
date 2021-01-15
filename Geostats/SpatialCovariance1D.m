@@ -13,7 +13,7 @@ switch type
     case 'exp'
         C = ExpCov(h,l);    
     case 'gau'
-        C = GauGov(h,l);
+        C = GauCov(h,l);
     case 'sph'
         C = SphCov(h,l);
 end

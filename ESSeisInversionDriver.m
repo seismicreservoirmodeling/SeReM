@@ -105,7 +105,7 @@ xlabel('Density (g/cm^3)');
 
 %% ESMDA seismic inversion
 niter = 4;
-alpha = 1/niter;  % sum alpha = 1
+alpha = niter;  % sum 1/alpha = 1
 PriorModels = [Vpsim; Vssim; Rhosim];
 SeisData = [Snear; Smid; Sfar];
 PostModels = PriorModels;

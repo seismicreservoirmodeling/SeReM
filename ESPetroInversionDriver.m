@@ -118,7 +118,7 @@ xlabel('Water saturation');
 
 %% ESMDA petrophysical inversion
 niter = 4;
-alpha = 1/niter;
+alpha = niter;  % sum 1/alpha = 1
 PriorModels = [Phisim; Claysim; Swsim];
 SeisData = [Snear; Smid; Sfar];
 PostModels = PriorModels;

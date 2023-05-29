@@ -112,18 +112,21 @@ imagesc(1, Depth, facies);
 ylabel('Depth (m)');
 subplot(142)
 pcolor(phidomain, Depth, Ppostphi); 
+set(gca, 'YDir','reverse')
 hold on; shading interp; %colorbar; 
 plot(Phi, Depth, 'k', 'LineWidth', 2);  
 xlabel('Porosity (v/v)');  xlim([0 0.4]);
 plot(Phimap, Depth, 'r', 'LineWidth', 2);
 subplot(143)
 pcolor(cdomain, Depth, Ppostclay); 
+set(gca, 'YDir','reverse')
 hold on; shading interp; %colorbar; 
 plot(v_clay, Depth, 'k', 'LineWidth', 2); 
 xlabel('Clay volume (v/v)'); xlim([0 0.8]);
 plot(Cmap, Depth, 'r', 'LineWidth', 2);
 subplot(144)
 pcolor(swdomain, Depth, Ppostsw); 
+set(gca, 'YDir','reverse')
 hold on; shading interp; %colorbar; 
 plot(sw, Depth, 'k', 'LineWidth', 2); 
 plot(Swmap, Depth, 'r', 'LineWidth', 2);

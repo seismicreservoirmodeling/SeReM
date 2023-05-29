@@ -2,7 +2,7 @@
 
 %% Creat synthetic well data 
 addpath(genpath('../SeReM/'))
-WELL = read_las_file('D:\Seismic projects\Pseudo_wells_ModRock\pseudowell_2856667402688.las');
+WELL = read_las_file('Data\pseudowell_2856667402688.las');
 
 Depth = WELL.curves(:,1);
 facies = WELL.curves(:,2);

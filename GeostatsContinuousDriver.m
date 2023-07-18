@@ -53,7 +53,6 @@ legend('Gauss Sims.', 'Simple Krig.', 'Ord. Krig.', 'mean Gauss Sims.');
 
 %% Example 2 (elevation Yellowstone)
 load Data/ElevationData.mat
-load Data/data6.mat
 % available data (15 measurements)
 dcoords = [ dx dy ]; % for the set of 100 measurements simply comment line 56
 nd = size(dcoords,1);
@@ -115,4 +114,78 @@ imagesc(unique(X),unique(Y),sgsim(:,:,2));
 xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
 colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
 title('SGS Realization 2');
+
+
+%% Example 3 (elevation Yellowstone) using grid Kriging_options function
+% Kriging_options is being implemented to account for additional options
+% such as max number of conditioning points, searching neighborhood and type
+% of kriging, including the parfor loop over all the points 
+
+% resampling random positions to test  max number of conditioning points
+n_dcoords = 200;
+sampling_indices = randperm(numel(X(:)), n_dcoords );
+dcoords = [ X(sampling_indices)' Y(sampling_indices)' ];
+dz = Z(sampling_indices)';
+xcoords = [ X(:) Y(:) ];
+n = size(xcoords,1);
+nd = size(dcoords,1);
+
+% parameters random variable
+zmean = 2476;
+zvar = 8721;
+l = 12.5;
+type = 'exp';
+
+% plot
+figure(5)
+subplot(131)
+scatter(dcoords(:,1), dcoords(:,2), 50, dz, 'filled');
+grid on; box on; xlabel('X'); ylabel('Y'); colorbar; caxis([2000 2800]); 
+set(gca, 'YDir', 'reverse')
+axis([min(dcoords(:,1)) max(dcoords(:,1)) min(dcoords(:,2)) max(dcoords(:,2)) ])
+
+[xok_grid, v_grid] = Kriging_options(xcoords, dcoords, dz, zvar, l, type);
+
+xok_grid = reshape(xok_grid, size(X));
+v_grid = reshape(v_grid, size(X));
+v_grid(v_grid<0) = 0;
+
+subplot(132)
+pcolor(unique(X),unique(Y),xok_grid);
+xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
+colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
+title('Result of Kriging-options')
+
+subplot(133)
+pcolor(unique(X),unique(Y),v_grid);
+xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
+colorbar;  hbc=colorbar; title(hbc, 'Elevation');
+title('Result of Kriging-options')
+
+
+%% Example 4 FFT-Moving average simulation example
+%% Important: the simulations performed by the FFT_MA_3D function are periodic due to the periodic assumption of FFT.
+% The usual way to overcome this fact is to generate a simulation larger than your model grid and then crop it.
+
+I = 2 * size(X,1);
+J = 2 * size(X,2);
+
+noise = randn(I,J);
+
+[correlation_function] = construct_correlation_function(l, l, noise, type, 0);
+[ simulation ] = FFT_MA_3D( correlation_function, noise );
+
+% croping the simulation to avoid periodicity
+simulation = simulation(1:I/2,1:J/2);
+
+% Based on PFS, apply kriging mean and variance for conditional simulations
+simulation = xok_grid + sqrt(v_grid) .* simulation;
+
+
+% plot
+figure(6)
+pcolor(unique(X),unique(Y),simulation);
+xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
+colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
+
 

@@ -189,3 +189,81 @@ xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
 colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
 
 
+
+
+%% Example 5 DMS - Direct Multivariate Simulation example
+
+load('Data/HardData_ReferenceModel_size100_range20.mat');
+
+% Use 2D reference simulations as reference variables:
+I = size(reference_models,2);
+J = size(reference_models,3);
+reference_variables = [reshape(reference_models(1,:,:),I*J,1) reshape(reference_models(2,:,:),I*J,1) reshape(reference_models(3,:,:),I*J,1) reshape(reference_models(4,:,:),I*J,1) reshape(reference_models(5,:,:),I*J,1) reshape(reference_models(6,:,:),I*J,1) ] ;
+
+% DKE: OPTIONAL
+[reference_variables] = extend_dateset_KDE(reference_variables,2,0.05);
+
+% Run DMS 
+grid_size = 0.05; 
+range = 20;
+n_simulations = 1;
+
+% Number of conditional points
+n_cond_points = 100;
+cond_value_ = cond_value(1:n_cond_points ,:);
+cond_pos_ = cond_pos(1:n_cond_points ,:);
+
+% condicional DMS
+[simulations_all_dms] = DMS(I,J, range, grid_size, reference_variables, cond_pos_, cond_value_, n_simulations);
+simulation_dms = simulations_all_dms{1};
+
+
+% plot
+% simulations
+generate_2D(reference_models,cond_pos_)
+subplot(2,3,1)
+caxis([-3 3])
+subplot(2,3,2)
+caxis([-15 2])
+subplot(2,3,3)
+caxis([-10 12])
+subplot(2,3,4)
+caxis([-3 3])
+subplot(2,3,5)
+caxis([-5 5])
+subplot(2,3,5)
+caxis([-13 10])
+
+generate_2D(simulation_dms,cond_pos_)
+subplot(2,3,1)
+caxis([-3 3])
+subplot(2,3,2)
+caxis([-15 2])
+subplot(2,3,3)
+caxis([-10 12])
+subplot(2,3,4)
+caxis([-3 3])
+subplot(2,3,5)
+caxis([-5 5])
+subplot(2,3,5)
+caxis([-13 10])
+
+% Histograms
+generate_histograms(reshape(reference_models,6,I*J)')
+generate_histograms(reshape(simulation_dms,6,I*J)')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

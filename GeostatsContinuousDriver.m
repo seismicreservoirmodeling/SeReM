@@ -214,7 +214,7 @@ cond_value_ = cond_value(1:n_cond_points ,:);
 cond_pos_ = cond_pos(1:n_cond_points ,:);
 
 % condicional DMS
-[simulations_all_dms] = DMS(I,J, range, grid_size, reference_variables, cond_pos_, cond_value_, n_simulations);
+[simulations_all_dms] = DMS(I,J, range, type, grid_size, reference_variables, cond_pos_, cond_value_, n_simulations);
 simulation_dms = simulations_all_dms{1};
 
 

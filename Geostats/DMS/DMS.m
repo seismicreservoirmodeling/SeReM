@@ -1,4 +1,4 @@
-function [logs_simulated_all] = DMS(I,J, range, grid_size, ref_variables, cond_pos, cond_value, num_of_sims)
+function [logs_simulated_all] = DMS(I,J, range, type, grid_size, ref_variables, cond_pos, cond_value, num_of_sims)
 % TO DO: EXPLAIN INPUTS
 
 
@@ -14,21 +14,26 @@ if size(cond_value, 1) > 0
     [X,Y] = meshgrid(1:I,1:J);
     xcoords = [ Y(:) X(:)];
     for i = 1:1:size(krig_mean,1)
-        [mean_krig, var_krig] = Kriging_options(xcoords, cond_pos, cond_value_gaussian_2krig(:,i), 1, range, 'sph');
+        [mean_krig, var_krig] = Kriging_options(xcoords, cond_pos, cond_value_gaussian_2krig(:,i), 1, range, type);
         krig_mean(i,:) = mean_krig(:);
         krig_std(i,:) = sqrt(var_krig(:));
     end
 end
 
+% correlation function to use FFTMA in DMS. It is also possible to use SGS instead
+[correlation_function] = construct_correlation_function(range, range, zeros(I,J), type, 0);        
+
 %% DMS 
 logs_simulated_all = cell(num_of_sims,1);
-for n = 1:1:num_of_sims
+parfor n = 1:1:num_of_sims
     
     % simulating Gaussian realizations using FFTMA
     simulations2D = zeros(size(ref_variables,2), I, J);
     for i = 1:1:size(ref_variables, 2)
-        white_noises = randn(I * J,1);
-        simulations_gaussian = fftma_l3c(I, J, range, range, 0, white_noises);
+        white_noise = randn(I,J);
+        simulations_gaussian = FFT_MA_3D(correlation_function,white_noise);
+        simulations_gaussian = make_it_gaussian(simulations_gaussian(:)); % It makes the simulation to be "Perfectly" Gaussian distributed, therefore, better non-parametric simulations
+        simulations_gaussian = reshape(simulations_gaussian,I,J);
         simulations2D(i,:,:) = simulations_gaussian;
     end
     

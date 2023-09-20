@@ -1,5 +1,5 @@
-function l = RadialCorrLength(lmin, lmax, azim, theta)
-%function l = RadialCorrLength(l1, l2, l3, angles, theta)
+function l = RadialCorrLength(l1, l2, l3, angles, theta)
+%function l = RadialCorrLength(lmin, lmax, azim, theta)
 
 % RADIAL CORR LENGTH computes the radial correlation length 
 % INPUT lmin = minimum correlation length

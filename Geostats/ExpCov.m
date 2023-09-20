@@ -8,6 +8,6 @@ function C = ExpCov(h,l)
 % Written by Dario Grana (August, 2020)
 
 % covariance function
-C = exp(-3*h/l);
+C = exp(-3*h./l);
 
 

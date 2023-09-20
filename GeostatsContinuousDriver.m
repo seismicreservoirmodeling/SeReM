@@ -16,7 +16,7 @@ xcoords = [ 10 10 ];
 % parameters random variable
 xmean = 3.5;
 xvar = 0.1;
-l = 9;
+l = [12];
 type = 'exp';
 
 % plot
@@ -63,7 +63,7 @@ n = size(xcoords,1);
 % parameters random variable
 zmean = 2476;
 zvar = 8721;
-l = 12.5;
+l = [12 15];
 type = 'exp';
 
 % plot
@@ -133,7 +133,7 @@ nd = size(dcoords,1);
 % parameters random variable
 zmean = 2476;
 zvar = 8721;
-l = 12.5;
+l = [12.5 15];
 type = 'exp';
 
 % plot
@@ -172,7 +172,8 @@ J = 2 * size(X,2);
 
 noise = randn(I,J);
 
-[correlation_function] = construct_correlation_function(l, l, noise, type, 0);
+l = [12.5 15];
+[correlation_function] = construct_correlation_function(l(1), l(2), noise, type, 0);
 [ simulation ] = FFT_MA_3D( correlation_function, noise );
 
 % croping the simulation to avoid periodicity

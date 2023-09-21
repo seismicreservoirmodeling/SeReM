@@ -17,11 +17,25 @@ function [xok, xvarok] = OrdinaryKriging(xcoord, dcoords, dvalues, xvar, l, type
 nd = size(dcoords,1);
 krigmatr = ones(nd+1,nd+1);
 krigvect = ones(nd+1,1);
-xdtemp = squareform(pdist([xcoord; dcoords]));
+
+coords = [xcoord; dcoords];
+xdtemp = squareform(pdist(coords));
 distvect = xdtemp(2:end,1);
 distmatr = xdtemp(2:end,2:end);
-krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,l,type);
-krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,l,type);
+
+if length(l) == 1
+    krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,l,type);
+    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,l,type);
+else
+    angles_rad = atan2( coords(:,2).' - coords(:,2) , coords(:,1).' - coords(:,1) );
+    angles_rad = triu(angles_rad) + triu(angles_rad)';
+    angvect = angles_rad(2:end,1);
+    angmatr = angles_rad(2:end,2:end);
+    krigvect(1:nd,1) = xvar*SpatialCovariance2D(l(1), l(2), 0, angvect, distvect, type);
+    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance2D(l(1), l(2), 0, angmatr, distmatr, type);
+end
+
+    
 krigmatr(end,end) = 0;
 
 % kriging weights

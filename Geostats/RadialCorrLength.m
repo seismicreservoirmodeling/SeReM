@@ -1,5 +1,4 @@
 function l = RadialCorrLength(l, angles, theta, gamma)
-%function l = RadialCorrLength(lmin, lmax, azim, theta)
 %l = sqrt( (lmin^2*lmax^2) ./ (lmax^2*(sin(azim-theta)).^2 + lmin^2*(cos(azim-theta)).^2) );
 
 % RADIAL CORR LENGTH computes the radial correlation length 
@@ -12,8 +11,12 @@ function l = RadialCorrLength(l, angles, theta, gamma)
 
 azim = angles(1);
 dip = angles(2);
-l = sqrt( (l(1)^2*l(2)^2*l(3)^2) ./ ( l(3)^2*(l(2)^2*(cos(azim-theta)).^2 + l(1)^2*(sin(azim-theta)).^2).*(cos(dip - gamma)).^2 + l(1)^2*l(2)^2*sin(dip - gamma).^2 ) );
 
-% For 2D:
-%l = sqrt( (l(1)^2*l(2)^2*l(3)^2) ./ ( l(3)^2*(l(2)^2*(cos(azim-theta)).^2 + l(1)^2*(sin(azim-theta)).^2) ) );
+if length(l)==2
+    l = sqrt( (l(1)^2*l(2)^2) ./ (l(1)^2*(sin(azim-theta)).^2 + l(2)^2*(cos(azim-theta)).^2) );
+else
+    l = sqrt( (l(1)^2*l(2)^2*l(3)^2) ./ ( l(3)^2*(l(2)^2*(cos(azim-theta)).^2 + l(1)^2*(sin(azim-theta)).^2).*(cos(dip - gamma)).^2 + l(1)^2*l(2)^2*sin(dip - gamma).^2 ) );
+end
+   
+
 

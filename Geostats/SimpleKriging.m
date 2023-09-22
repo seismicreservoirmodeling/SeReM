@@ -33,11 +33,16 @@ else
     azimvect = azim_rad(2:end,1);
     azimmatr = azim_rad(2:end,2:end);
     
-    r = sqrt( coords(:,1).^2 + coords(:,2).^2 );
-    dip_rad = atan2( r.' - r , coords(:,3).' - coords(:,3) );
-    dip_rad = triu(dip_rad) + triu(dip_rad)';
-    dipvect = dip_rad(2:end,1);
-    dipmatr = dip_rad(2:end,2:end);
+    if length(l) ==3
+        r = sqrt( coords(:,1).^2 + coords(:,2).^2 );
+        dip_rad = atan2( r.' - r , coords(:,3).' - coords(:,3) );
+        dip_rad = triu(dip_rad) + triu(dip_rad)';
+        dipvect = dip_rad(2:end,1);
+        dipmatr = dip_rad(2:end,2:end);
+    else
+        dipvect = pi/2*ones(size(azimvect));
+        dipmatr = pi/2*ones(size(azimmatr));
+    end
     
     krigvect(1:nd,1) = xvar*SpatialCovariance3D(l, [0,pi/2], azimvect, dipvect, distvect, type);
     krigmatr(1:nd,1:nd) = xvar*SpatialCovariance3D(l, [0,pi/2], azimmatr, dipmatr, distmatr, type);

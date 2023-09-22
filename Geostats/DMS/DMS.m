@@ -14,7 +14,8 @@ if size(cond_value, 1) > 0
     [X,Y] = meshgrid(1:I,1:J);
     xcoords = [ Y(:) X(:)];
     for i = 1:1:size(krig_mean,1)
-        [mean_krig, var_krig] = Kriging_options(xcoords, cond_pos, cond_value_gaussian_2krig(:,i), 1, range, type);
+        krig = 1;
+        [mean_krig, var_krig] = Kriging_options(xcoords, cond_pos, cond_value_gaussian_2krig(:,i), 1, range, type, krig);
         krig_mean(i,:) = mean_krig(:);
         krig_std(i,:) = sqrt(var_krig(:));
     end

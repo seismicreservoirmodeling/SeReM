@@ -7,7 +7,7 @@ function [xsk, xvarsk] = SimpleKriging(xcoord, dcoords, dvalues, xmean, xvar, l,
 %       xmean = prior mean
 %       xvar = prior variance
 %       h = distance
-%       l = correlation length
+%       l = correlation length, 1x1 for isotropic or 3x1 for anisotropic
 %       type = function ype ('exp', 'gau', 'sph')
 % OUTPUT xsk = kriging estimate
 %        xvarsk = kriging variance
@@ -22,10 +22,12 @@ xdtemp = squareform(pdist([xcoord; dcoords]));
 distvect = xdtemp(2:end,1);
 distmatr = xdtemp(2:end,2:end);
 
+% if isotropic
 if length(l) == 1
     krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,l,type);
     krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,l,type);
 else
+    % if anisotropic
     azim_rad = atan2( coords(:,2).' - coords(:,2) , coords(:,1).' - coords(:,1) );
     azim_rad = triu(azim_rad) + triu(azim_rad)';
     azimvect = azim_rad(2:end,1);

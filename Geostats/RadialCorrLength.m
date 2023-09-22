@@ -13,5 +13,7 @@ function l = RadialCorrLength(l, angles, theta, gamma)
 azim = angles(1);
 dip = angles(2);
 l = sqrt( (l(1)^2*l(2)^2*l(3)^2) ./ ( l(3)^2*(l(2)^2*(cos(azim-theta)).^2 + l(1)^2*(sin(azim-theta)).^2).*(cos(dip - gamma)).^2 + l(1)^2*l(2)^2*sin(dip - gamma).^2 ) );
+
+% For 2D:
 %l = sqrt( (l(1)^2*l(2)^2*l(3)^2) ./ ( l(3)^2*(l(2)^2*(cos(azim-theta)).^2 + l(1)^2*(sin(azim-theta)).^2) ) );
 

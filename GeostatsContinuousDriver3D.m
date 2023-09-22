@@ -1,6 +1,7 @@
 
+%% OBSERVATION: The angles of the anisotropic variogram are still hard-coded in Ordinary and Simples Kriging functions
+
 addpath(genpath('../SeReM/'))
-close all
 
 %% Example 1
 % available data (4 measurements)
@@ -32,11 +33,11 @@ grid on; box on; xlabel('X'); ylabel('Y'); colorbar; caxis([3 4.2]);
 [xok, ~] = OrdinaryKriging(xcoords, dcoords, dvalues, xvar, l, type);
 
 % Gaussian simulation
-krig = 0;
+krig_mean = 0;
 nsim = 100;
 gsim = zeros(nsim,1);
 for i=1:nsim
-    gsim(i) = GaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig);
+    gsim(i) = GaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig_mean);
 end
 
 % plot results
@@ -53,150 +54,99 @@ legend('Gauss Sims.', 'Simple Krig.', 'Ord. Krig.', 'mean Gauss Sims.');
  load Data/ElevationData.mat
  % available data (15 measurements)
 
-Lx = 18;
-Ly = 20;
-Lz = 22;
-dcoords = [ Ly/4   Lx/2   Lz/2 ;
-           3*Ly/4  Lx/2  Lz/2 ];        
+% grid size:
+Li = 18;
+Lj = 20;
+Lk = 22;
+% Matlab meshgrid invert the dimension of X and Y when working with 3
+% dimension, because of that we need to invert them in the following lines:
+[J,I,K] = meshgrid( 1:Li, 1:Lj, 1:Lk );
+xcoords = [ I(:) J(:) K(:) ];
+
+% Hard data:
+i_data = [Li/2 ; Li/2];
+j_data = [Lj/4 ; 3*Lj/4];
+k_data = [Lk/2 ; Lk/2];
+% We need to invert x y here as well
+dcoords = [j_data i_data k_data];
 dcoords = round(dcoords);
 dz = [ -1 ; 1 ];
 
-%[X,Y,T] = meshgrid( 1:8, 1:10, 1:12 );
-[Y,X,T] = meshgrid( 1:Lx, 1:Ly, 1:Lz );
-xcoords = [ X(:) Y(:) T(:) ];
-n = size(xcoords,1);
-
-% parameters random variable
+% Random variable / Variogram settings
 zmean = 0;
 zvar = 1;
-lx = 15;
-ly = 15;
-lz = 15;
-l = [ly lx lz];
+Li = 15;
+lj = 7;
+lk = 7;
+l = [lj Li lk];
 type = 'gau';
+krig = 1;
 
 
 % kriging                    
-[xok_grid, v_grid] = Kriging_options(xcoords, dcoords, dz, zvar, l, type);
-xok_grid = reshape(xok_grid, size(X));
-v_grid = reshape(v_grid, size(X));
-v_grid(v_grid<0) = 0;
+[krig_mean, krig_var] = Kriging_options(xcoords, dcoords, dz, zvar, l, type, krig);
+krig_mean = reshape(krig_mean, size(I));
+krig_mean = permute(krig_mean, [2, 1, 3]);
+krig_var = reshape(krig_var, size(I));
+krig_var(krig_var<0) = 0;
+krig_var = permute(krig_var, [2, 1, 3]);
 
+% I do not have any idea why, but the SGS is working only with Li=ly=lz,
+% otherwise it gives several outliers.
 % % Sequential Gaussian Simulation
-% krig = 1;
-% sgsim = SeqGaussianSimulation(xcoords, dcoords, dz, zmean, zvar, l, type, krig);
-% sgsim = reshape(sgsim,size(X));
+krig = 1;
+sgsim = SeqGaussianSimulation(xcoords, dcoords, dz, zmean, zvar, l, type, krig);
+sgsim = reshape(sgsim,size(I));
+sgsim = permute(sgsim , [2, 1, 3]);
    
 
 % plot results
 figure(3)
 subplot(3,3,1)
-imagesc(squeeze(xok_grid(:,:,end/2)))
-caxis([-2.5 2.5])
-xlabel('X')
-ylabel('Y')
+imagesc(squeeze(krig_mean(:,:,end/2)))
+caxis([-2 2])
+xlabel('Y')
+ylabel('X')
 subplot(3,3,2)
-imagesc(squeeze(xok_grid(:,end/2,:)))
-caxis([-2.5 2.5])
+imagesc(squeeze(krig_mean(:,Lj/4,:)))
+caxis([-2 2])
 xlabel('Z')
-ylabel('Y')
+ylabel('X')
 subplot(3,3,3)
-imagesc(squeeze(xok_grid(end/2-1,:,:)))
+imagesc(squeeze(krig_mean(end/2,:,:)))
+caxis([-2 2])
+xlabel('Z')
+ylabel('Y')
+subplot(3,3,4)
+imagesc(squeeze(krig_var(:,:,end/2)))
+caxis([0 1])
+xlabel('Y')
+ylabel('X')
+subplot(3,3,5)
+imagesc(squeeze(krig_var(:,Lj/4,:)))
+caxis([0 1])
+xlabel('Z')
+ylabel('X')
+subplot(3,3,6)
+imagesc(squeeze(krig_var(end/2,:,:)))
+caxis([0 1])
+xlabel('Z')
+ylabel('Y')
+subplot(3,3,7)
+imagesc(squeeze(sgsim(:,:,end/2)))
+caxis([-2.5 2.5])
+xlabel('Y')
+ylabel('X')
+subplot(3,3,8)
+imagesc(squeeze(sgsim(:,Ly/4,:)))
 caxis([-2.5 2.5])
 xlabel('Z')
 ylabel('X')
-subplot(3,3,4)
-imagesc(squeeze(v_grid(:,:,end/2)))
-caxis([0 1])
-xlabel('X')
-ylabel('Y')
-subplot(3,3,5)
-imagesc(squeeze(v_grid(:,end/2,:)))
-caxis([0 1])
+subplot(3,3,9)
+imagesc(squeeze(sgsim(end/2,:,:)))
+caxis([-2.5 2.5])
 xlabel('Z')
 ylabel('Y')
-subplot(3,3,6)
-imagesc(squeeze(v_grid(end/2,:,:)))
-caxis([0 1])
-xlabel('Z')
-ylabel('X')
-% subplot(3,3,7)
-% imagesc(squeeze(sgsim(:,:,end/2)))
-% caxis([-2.5 2.5])
-% xlabel('X')
-% ylabel('Y')
-% subplot(3,3,8)
-% imagesc(squeeze(sgsim(:,end/2,:)))
-% caxis([-2.5 2.5])
-% xlabel('Z')
-% ylabel('Y')
-% subplot(3,3,9)
-% imagesc(squeeze(sgsim(end/2,:,:)))
-% caxis([-2.5 2.5])
-% xlabel('Z')
-% ylabel('X')
-
-
-%% Example 2 (elevation Yellowstone)
-% load Data/ElevationData.mat
-% % available data (15 measurements)
-% dt = zeros(size(dy));
-% %dcoords = [ dx dy dt]; % for the set of 100 measurements simply comment line 56
-% dcoords = [ dy dx dt]; % for the set of 100 measurements simply comment line 56
-% nd = size(dcoords,1);
-% % grid of coordinates of the location to be estimated
-% %[Y,X,T] = meshgrid( X(1,:), Y(:,1), 0:2 );
-% [Y,X,T] = meshgrid(X(1,:), Y(:,1), 0:2 );
-% xcoords = [ X(:) Y(:) T(:) ];
-% n = size(xcoords,1);
-% 
-% % parameters random variable
-% zmean = 2476;
-% zvar = 8721;
-% lx = 12.5;
-% ly = 6;
-% lz = 12.5;
-% l = [ly lx lz];
-% type = 'exp';
-% 
-% % plot
-% figure(4)
-% scatter(dx, dy, 50, dz, 'filled');
-% grid on; box on; xlabel('X'); ylabel('Y'); colorbar; caxis([2000 2800]); 
-% 
-% % kriging
-%  [xok_grid, v_grid] = Kriging_options(xcoords, dcoords, dz, zvar, l, type);
-%  xok_grid = reshape(xok_grid,size(X));
-%  v_grid = reshape(v_grid,size(X));
-% 
-% % Sequential Gaussian Simulation
-% krig = 1;
-% sgsim = SeqGaussianSimulation(xcoords, dcoords, dz, zmean, zvar, l, type, krig);
-% sgsim = reshape(sgsim,size(X));
-% 
-% 
-% % plot results
-% figure(4)
-% subplot(221)
-% pcolor(unique(Y),unique(X),xok_grid(:,:,1));
-% xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
-% colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
-% title('Simple Kriging');
-% subplot(222)
-% imagesc(unique(Y),unique(X),xok_grid(:,:,3));
-% xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
-% colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
-% title('Ordinary Kriging');
-% subplot(223)
-% imagesc(unique(Y),unique(X),sgsim(:,:,1));
-% xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
-% colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
-% title('SGS Realization 1');
-% subplot(224)
-% imagesc(unique(Y),unique(X),sgsim(:,:,3));
-% xlabel('X'); ylabel('Y'); shading interp; set(gca, 'YDir', 'reverse')
-% colorbar; caxis([2000 2800]); hbc=colorbar; title(hbc, 'Elevation');
-% title('SGS Realization 2');
 
 
 

@@ -9,7 +9,7 @@ function sgsim = SeqGaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l
 %       xmean = prior mean
 %       xvar = prior variance
 %       h = distance
-%       l = correlation length
+%       correlation length, 1x1 for isotropic or 3x1 for anisotropic
 %       type = function ype ('exp', 'gau', 'sph')
 %       krig = kriging type (0=simple, 1=ordinary)
 % OUTPUT sgsim = realization

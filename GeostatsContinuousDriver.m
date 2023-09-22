@@ -16,7 +16,7 @@ xcoords = [ 10 10 ];
 % parameters random variable
 xmean = 3.5;
 xvar = 0.1;
-l = [12 15];
+l = 9;
 type = 'exp';
 
 % plot
@@ -63,7 +63,7 @@ n = size(xcoords,1);
 % parameters random variable
 zmean = 2476;
 zvar = 8721;
-l = [12 15];
+l = 12.5;
 type = 'exp';
 
 % plot
@@ -133,7 +133,7 @@ nd = size(dcoords,1);
 % parameters random variable
 zmean = 2476;
 zvar = 8721;
-l = [12.5 15];
+l = 12.5;
 type = 'exp';
 
 % plot
@@ -172,8 +172,7 @@ J = 2 * size(X,2);
 
 noise = randn(I,J);
 
-l = [12.5 15];
-[correlation_function] = construct_correlation_function(l(1), l(2), noise, type, 0);
+[correlation_function] = construct_correlation_function(l, l, noise, type, 0);
 [ simulation ] = FFT_MA_3D( correlation_function, noise );
 
 % croping the simulation to avoid periodicity
@@ -206,7 +205,7 @@ reference_variables = [reshape(reference_models(1,:,:),I*J,1) reshape(reference_
 
 % Run DMS 
 grid_size = 0.05; 
-range = 20;
+l = 20;
 n_simulations = 1;
 
 % Number of conditional points
@@ -215,7 +214,7 @@ cond_value_ = cond_value(1:n_cond_points ,:);
 cond_pos_ = cond_pos(1:n_cond_points ,:);
 
 % condicional DMS
-[simulations_all_dms] = DMS(I,J, range, type, grid_size, reference_variables, cond_pos_, cond_value_, n_simulations);
+[simulations_all_dms] = DMS(I,J, l, type, grid_size, reference_variables, cond_pos_, cond_value_, n_simulations);
 simulation_dms = simulations_all_dms{1};
 
 

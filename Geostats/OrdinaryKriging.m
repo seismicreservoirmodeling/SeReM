@@ -27,12 +27,19 @@ if length(l) == 1
     krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,l,type);
     krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,l,type);
 else
-    angles_rad = atan2( coords(:,2).' - coords(:,2) , coords(:,1).' - coords(:,1) );
-    angles_rad = triu(angles_rad) + triu(angles_rad)';
-    angvect = angles_rad(2:end,1);
-    angmatr = angles_rad(2:end,2:end);
-    krigvect(1:nd,1) = xvar*SpatialCovariance2D(l(1), l(2), 0, angvect, distvect, type);
-    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance2D(l(1), l(2), 0, angmatr, distmatr, type);
+    azim_rad = atan2( coords(:,2).' - coords(:,2) , coords(:,1).' - coords(:,1) );
+    azim_rad = triu(azim_rad) + triu(azim_rad)';
+    azimvect = azim_rad(2:end,1);
+    azimmatr = azim_rad(2:end,2:end);
+    
+    r = sqrt( coords(:,1).^2 + coords(:,2).^2 );
+    dip_rad = atan2( r.' - r , coords(:,3).' - coords(:,3) );
+    dip_rad = triu(dip_rad) + triu(dip_rad)';
+    dipvect = dip_rad(2:end,1);
+    dipmatr = dip_rad(2:end,2:end);
+    
+    krigvect(1:nd,1) = xvar*SpatialCovariance3D(l, [0,pi/2], azimvect, dipvect, distvect, type);
+    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance3D(l, [0,pi/2], azimmatr, dipmatr, distmatr, type);
 end
 
     

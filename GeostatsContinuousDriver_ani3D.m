@@ -88,7 +88,7 @@ angk = 45;
 % We need to invert x y here as well
 angles = [angj angi angk];
 
-type = 'sph';
+type = 'gau';
 krig = 1;
 
 % kriging                    

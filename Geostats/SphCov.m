@@ -9,5 +9,4 @@ function C = SphCov(h,l)
 
 % covariance function
 C=zeros(size(h));
-C(h<=l) = 1 - 3/2*h(h<=l) ./ l(h<=l) + 1/2*h(h<=l).^3 ./ l(h<=l).^3;
-
+C(h<=l) = 1-3/2*h(h<=l)/l+1/2*h(h<=l).^3/l^3;

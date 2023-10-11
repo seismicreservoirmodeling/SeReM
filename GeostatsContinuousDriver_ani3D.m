@@ -16,6 +16,7 @@ xcoords = [ 11 9 0];
 xmean = 3.5;
 xvar = 0.1;
 l = [90 2 90];
+angles = [0 0 45];
 %l = [2 2 2];
 type = 'exp';
 
@@ -27,17 +28,17 @@ plot(xcoords(:,1), xcoords(:,2), 'ks');
 grid on; box on; xlabel('X'); ylabel('Y'); colorbar; caxis([3 4.2]); 
 
 % simple kiging
-[xsk, ~] = SimpleKriging(xcoords, dcoords, dvalues, xmean, xvar, l, type);
+[xsk, ~] = SimpleKriging(xcoords, dcoords, dvalues, xmean, xvar, l, type, angles);
 
 % ordinary kiging
-[xok, ~] = OrdinaryKriging(xcoords, dcoords, dvalues, xvar, l, type);
+[xok, ~] = OrdinaryKriging(xcoords, dcoords, dvalues, xvar, l, type, angles);
 
 % Gaussian simulation
-krig_mean = 0;
+krig = 1;
 nsim = 100;
 gsim = zeros(nsim,1);
 for i=1:nsim
-    gsim(i) = GaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig_mean);
+    gsim(i) = GaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig, angles);
 end
 
 % plot results
@@ -55,9 +56,9 @@ legend('Gauss Sims.', 'Simple Krig.', 'Ord. Krig.', 'mean Gauss Sims.');
  % available data (15 measurements)
 
 % grid size:
-Li = 18;
+Li = 20;
 Lj = 20;
-Lk = 22;
+Lk = 20;
 % Matlab meshgrid invert the dimension of X and Y when working with 3
 % dimension, because of that we need to invert them in the following lines:
 [J,I,K] = meshgrid( 1:Li, 1:Lj, 1:Lk );
@@ -75,28 +76,37 @@ dz = [ -1 ; 1 ];
 % Random variable / Variogram settings
 zmean = 0;
 zvar = 1;
-Li = 15;
-lj = 7;
-lk = 7;
+Li = 5;
+lj = 15;
+lk = 5;
+% We need to invert x y here as well
 l = [lj Li lk];
-type = 'gau';
+
+angi = 45;
+angj = 0;
+angk = 45;
+% We need to invert x y here as well
+angles = [angj angi angk];
+
+type = 'sph';
 krig = 1;
 
-
 % kriging                    
-[krig_mean, krig_var] = Kriging_options(xcoords, dcoords, dz, zvar, l, type, krig);
+[krig_mean, krig_var] = Kriging_options(xcoords, dcoords, dz, zvar, l, type, krig, angles);
 krig_mean = reshape(krig_mean, size(I));
 krig_mean = permute(krig_mean, [2, 1, 3]);
 krig_var = reshape(krig_var, size(I));
 krig_var(krig_var<0) = 0;
+% We need to invert x y here as well
 krig_var = permute(krig_var, [2, 1, 3]);
 
 % I do not have any idea why, but the SGS is working only with Li=ly=lz,
 % otherwise it gives several outliers.
 % % Sequential Gaussian Simulation
 krig = 1;
-sgsim = SeqGaussianSimulation(xcoords, dcoords, dz, zmean, zvar, l, type, krig);
+sgsim = SeqGaussianSimulation(xcoords, dcoords, dz, zmean, zvar, l, type, krig, angles);
 sgsim = reshape(sgsim,size(I));
+% We need to invert x y here as well
 sgsim = permute(sgsim , [2, 1, 3]);
    
 
@@ -138,7 +148,7 @@ caxis([-2.5 2.5])
 xlabel('Y')
 ylabel('X')
 subplot(3,3,8)
-imagesc(squeeze(sgsim(:,Ly/4,:)))
+imagesc(squeeze(sgsim(:,Lj/4,:)))
 caxis([-2.5 2.5])
 xlabel('Z')
 ylabel('X')

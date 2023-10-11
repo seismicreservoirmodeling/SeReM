@@ -204,7 +204,7 @@ reference_variables = [reshape(reference_models(1,:,:),I*J,1) reshape(reference_
 [reference_variables] = extend_dateset_KDE(reference_variables,2,0.05);
 
 % Run DMS 
-grid_size = 0.05; 
+cell_size = 0.05; 
 l = 20;
 n_simulations = 1;
 
@@ -214,7 +214,7 @@ cond_value_ = cond_value(1:n_cond_points ,:);
 cond_pos_ = cond_pos(1:n_cond_points ,:);
 
 % condicional DMS
-[simulations_all_dms] = DMS(I,J, l, type, [0 0 0], grid_size, reference_variables, cond_pos_, cond_value_, n_simulations);
+[simulations_all_dms] = DMS(I,J, l, type, [0 0 0], cell_size, reference_variables, cond_pos_, cond_value_, n_simulations);
 simulation_dms = simulations_all_dms{1};
 
 

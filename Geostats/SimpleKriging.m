@@ -28,7 +28,6 @@ if length(l) == 1
     krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,l,type);
 else % if anisotropic
     % Apply transformation in the coordinate system according to the variogram parameters
-    coords = [xcoord; dcoords];
     ROT = rotx(angles(1)) * roty(angles(2)) * rotz(angles(3));
     coords = (ROT * coords')';       
     coords = coords./l;

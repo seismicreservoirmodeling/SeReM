@@ -1,6 +1,15 @@
-function [logs_simulated_all] = DMS(I,J, range, type, angles, grid_size, ref_variables, cond_pos, cond_value, num_of_sims)
-% TO DO: EXPLAIN INPUTS
-
+function [logs_simulated_all] = DMS(I,J, range, type, angles, cell_size, ref_variables, cond_pos, cond_value, num_of_sims)
+% DIRECT MULTIVARIATE SIMULATION
+% Obs: Aiming a better perfomance, this implementation uses FFTMA and kriging/PFS. The methodology also allows to use sgs instead  
+% INPUT
+%   I,J - Grid size
+%   type = function ype ('exp', 'gau', 'sph')
+%   angles = used for anisotropic correlation function (1, 3)
+%   cell_size = Cell size of joint distribution. The default value is 0.05 (5% of the difference of min and max values of each variable)
+%   ref_variables = Reference variable that is used to define the non-parametric joing distribution
+%   xcoord = coordinates of the location for the estimation (1, ndim)
+%   dcoords = coordinates of the measurements (ns, ndim)
+%   num_of_sims = Number of simulations. 
 
 krig_mean = zeros(size(ref_variables,2), I, J);
 krig_std = ones(size(ref_variables,2), I, J);
@@ -8,7 +17,7 @@ krig_std = ones(size(ref_variables,2), I, J);
 if size(cond_value, 1) > 0
 
     % Gaussian transforming the conditional points
-    cond_value_uniform = nonParametric_to_uniform( cond_value, ref_variables , grid_size);        
+    cond_value_uniform = nonParametric_to_uniform( cond_value, ref_variables , cell_size);        
     cond_value_gaussian_2krig = norminv(cond_value_uniform);
     
     [X,Y] = meshgrid(1:I,1:J);
@@ -22,7 +31,7 @@ if size(cond_value, 1) > 0
 end
 
 % correlation function to use FFTMA in DMS. It is also possible to use SGS instead
-[correlation_function] = construct_correlation_function(zeros(I,J), range, type, angles);
+[correlation_function] = construct_correlation_function(zeros(I,J), range, type, angles, 1);
        
 %% DMS 
 logs_simulated_all = cell(num_of_sims,1);
@@ -52,7 +61,7 @@ parfor n = 1:1:num_of_sims
     
     % Transforming the conticioned Gaussian realizations to the non parametris pdf
     simulations_conditioned = normcdf(simulations_conditioned);
-    simulations_conditioned_nonParametric = uniform_to_nonParametric( simulations_conditioned, ref_variables, grid_size);
+    simulations_conditioned_nonParametric = uniform_to_nonParametric( simulations_conditioned, ref_variables, cell_size);
     
     result = zeros(size(simulations_conditioned_nonParametric,2), I, J);
     for i = 1:1:size(simulations_conditioned_nonParametric,2)

@@ -23,12 +23,14 @@ for i=1:I
             y = (j-round(J/2));
             z = (k-round(K/2));  
               
-            coord_rot = ROT* [x;y;z];
+            coord = [x;y;z];        
+            coord_rot = ROT * coord ;
+            coord_rot = coord_rot./l';
             x = coord_rot(1);
             y = coord_rot(2);
             z = coord_rot(3);
             
-            h = sqrt( (x/l(1)).^2 + (y/l(2)).^2 + (z/l(3)).^2 );
+            h = sqrt( x.^2 + y.^2 + z.^2 );
             
             value = SpatialCovariance1D(h, 1, type);
             

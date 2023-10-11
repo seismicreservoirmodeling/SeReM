@@ -1,4 +1,4 @@
-function [xsk, xvarsk] = SimpleKriging(xcoord, dcoords, dvalues, xmean, xvar, l, type)
+function [xsk, xvarsk] = SimpleKriging(xcoord, dcoords, dvalues, xmean, xvar, l, type, angles)
 
 % SIMPLE KRIGING computes the simple kriging estimate and variance 
 % INPUT xcoord = coordinates of the location for the estimation (1, ndim)
@@ -26,26 +26,18 @@ distmatr = xdtemp(2:end,2:end);
 if length(l) == 1
     krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,l,type);
     krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,l,type);
-else
-    % if anisotropic
-    azim_rad = atan2( coords(:,2).' - coords(:,2) , coords(:,1).' - coords(:,1) );
-    azim_rad = triu(azim_rad) + triu(azim_rad)';
-    azimvect = azim_rad(2:end,1);
-    azimmatr = azim_rad(2:end,2:end);
+else % if anisotropic
+    % Apply transformation in the coordinate system according to the variogram parameters
+    coords = [xcoord; dcoords];
+    ROT = rotx(angles(1)) * roty(angles(2)) * rotz(angles(3));
+    coords = (ROT * coords')';       
+    coords = coords./l;
     
-    if length(l) ==3
-        r = sqrt( coords(:,1).^2 + coords(:,2).^2 );
-        dip_rad = atan2( r.' - r , coords(:,3).' - coords(:,3) );
-        dip_rad = triu(dip_rad) + triu(dip_rad)';
-        dipvect = dip_rad(2:end,1);
-        dipmatr = dip_rad(2:end,2:end);
-    else
-        dipvect = pi/2*ones(size(azimvect));
-        dipmatr = pi/2*ones(size(azimmatr));
-    end
-    
-    krigvect(1:nd,1) = xvar*SpatialCovariance3D(l, [0,pi/2], azimvect, dipvect, distvect, type);
-    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance3D(l, [0,pi/2], azimmatr, dipmatr, distmatr, type);
+    xdtemp = squareform(pdist(coords));
+    distvect = xdtemp(2:end,1);
+    distmatr = xdtemp(2:end,2:end);    
+    krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,1,type);
+    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,1,type);   
 end
 
 % kriging weights

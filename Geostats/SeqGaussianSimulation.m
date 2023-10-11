@@ -1,4 +1,4 @@
-function sgsim = SeqGaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig)
+function sgsim = SeqGaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig, angles)
 
 % SEQ GAUSSIAN SIMULATION  generates a realization of the random variable 
 % conditioned on the available measurements using Sequential Gaussian
@@ -51,9 +51,9 @@ for i=1:np
     end
     % kriging
     if krig == 0
-        [krigmean, krigvar] = SimpleKriging(pathcoords(i,:), dc, dz, xmean, xvar, l, type);
+        [krigmean, krigvar] = SimpleKriging(pathcoords(i,:), dc, dz, xmean, xvar, l, type, angles);
     else
-        [krigmean, krigvar] = OrdinaryKriging(pathcoords(i,:), dc, dz, xvar, l, type);
+        [krigmean, krigvar] = OrdinaryKriging(pathcoords(i,:), dc, dz, xvar, l, type, angles);
     end
     % realization
     if krigvar<0

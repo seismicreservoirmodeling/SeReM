@@ -1,4 +1,4 @@
-function [logs_simulated_all] = DMS(I,J, range, type, grid_size, ref_variables, cond_pos, cond_value, num_of_sims)
+function [logs_simulated_all] = DMS(I,J, range, type, angles, grid_size, ref_variables, cond_pos, cond_value, num_of_sims)
 % TO DO: EXPLAIN INPUTS
 
 
@@ -15,15 +15,15 @@ if size(cond_value, 1) > 0
     xcoords = [ Y(:) X(:)];
     for i = 1:1:size(krig_mean,1)
         krig = 1;
-        [mean_krig, var_krig] = Kriging_options(xcoords, cond_pos, cond_value_gaussian_2krig(:,i), 1, range, type, krig);
+        [mean_krig, var_krig] = Kriging_options(xcoords, cond_pos, cond_value_gaussian_2krig(:,i), 1, range, type, krig, angles);
         krig_mean(i,:) = mean_krig(:);
         krig_std(i,:) = sqrt(var_krig(:));
     end
 end
 
 % correlation function to use FFTMA in DMS. It is also possible to use SGS instead
-[correlation_function] = construct_correlation_function(range, range, zeros(I,J), type, 0);        
-
+[correlation_function] = construct_correlation_function(zeros(I,J), range, type, angles);
+       
 %% DMS 
 logs_simulated_all = cell(num_of_sims,1);
 parfor n = 1:1:num_of_sims

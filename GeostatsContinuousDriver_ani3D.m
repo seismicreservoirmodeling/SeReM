@@ -100,7 +100,7 @@ krig_var(krig_var<0) = 0;
 % We need to invert x y here as well
 krig_var = permute(krig_var, [2, 1, 3]);
 
-% I do not have any idea why, but the SGS is working only with Li=ly=lz,
+% I do not have any idea why, but the SGS is working only with Li=lj=lk,
 % otherwise it gives several outliers.
 % % Sequential Gaussian Simulation
 krig = 1;

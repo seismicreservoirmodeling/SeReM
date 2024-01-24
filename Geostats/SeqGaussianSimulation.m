@@ -12,6 +12,7 @@ function sgsim = SeqGaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l
 %       correlation length, 1x1 for isotropic or 3x1 for anisotropic
 %       type = function ype ('exp', 'gau', 'sph')
 %       krig = kriging type (0=simple, 1=ordinary)
+%       angles = angles for anisotropic variogram , 3x1  
 % OUTPUT sgsim = realization
 
 % Written by Dario Grana (August, 2020)

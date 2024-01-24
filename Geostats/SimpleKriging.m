@@ -9,6 +9,7 @@ function [xsk, xvarsk] = SimpleKriging(xcoord, dcoords, dvalues, xmean, xvar, l,
 %       h = distance
 %       l = correlation length, 1x1 for isotropic or 3x1 for anisotropic
 %       type = function ype ('exp', 'gau', 'sph')
+%       angles = angles for anisotropic variogram , 3x1  
 % OUTPUT xsk = kriging estimate
 %        xvarsk = kriging variance
 

@@ -8,6 +8,7 @@ function [xok, xvarok] = OrdinaryKriging(xcoord, dcoords, dvalues, xvar, l, type
 %       h = distance
 %       l = correlation length, 1x1 for isotropic or 3x1 for anisotropic
 %       type = function ype ('exp', 'gau', 'sph')
+%       angles = angles for anisotropic variogram , 3x1  
 % OUTPUT xok = kriging estimate
 %        xvarok = kriging variance
 

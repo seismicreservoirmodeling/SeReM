@@ -26,11 +26,18 @@ ntheta = length(theta);
 logVp = log(Vpprior);
 logVs = log(Vsprior);
 logRho = log(Rhoprior);
-mprior = [logVp; logVs; logRho];
+logIp = log(Vpprior.*Rhoprior);
+logVpVs = log(Vpprior./Vsprior);
 nm = size(logVp,1);
 
 % Aki Richards matrix
-A = AkiRichardsCoefficientsMatrix(Vpprior, Vsprior, theta, nv);
+if nv==3
+    mprior = [logVp; logVs; logRho];
+    A = AkiRichardsCoefficientsMatrix(Vpprior, Vsprior, theta, nv);
+else
+    mprior = [logIp; logVpVs];
+    A = deFigGranaCoefficientsMatrix(Vpprior, Vsprior, theta, nv);
+end
 
 % Differential matrix 
 D = DifferentialMatrix(nm,nv);

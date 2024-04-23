@@ -67,45 +67,45 @@ sigmaprior = kron(sigma0, sigmatime);
 Seis = [Snear; Smid; Sfar];
 [mmap, mlp, mup, Time] = SeismicInversion(Seis, TimeSeis, Vpprior, Vsprior, Rhoprior, sigmaprior, sigmaerr, wavelet, theta, nv);
 
-% Vpmap = mmap(1:nm);
-% Vsmap = mmap(nm+1:2*nm);
-% Rhomap = mmap(2*nm+1:end);
-% Vplp = mlp(1:nm);
-% Vslp = mlp(nm+1:2*nm);
-% Rholp = mlp(2*nm+1:end);
-% Vpup = mup(1:nm);
-% Vsup = mup(nm+1:2*nm);
-% Rhoup = mup(2*nm+1:end);
-% 
-% %% Plot results
-% figure(2)
-% subplot(131)
-% plot(Vp, Time, 'k', 'LineWidth', 2);
-% hold on;
-% plot(Vpprior, Time, 'b', 'LineWidth', 1);
-% plot(Vpmap, Time, 'r', 'LineWidth', 2);
-% plot(Vplp, Time, 'r--', 'LineWidth', 1);
-% plot(Vpup, Time, 'r--', 'LineWidth', 1);
-% axis tight; grid on; box on; set(gca, 'YDir', 'reverse');
-% xlabel('P-wave velocity (km/s)'); ylabel('Time (s)');
-% subplot(132)
-% plot(Vs, Time, 'k', 'LineWidth', 2);
-% hold on
-% plot(Vsprior, Time, 'b', 'LineWidth', 1);
-% plot(Vsmap, Time, 'r', 'LineWidth', 2);
-% plot(Vslp, Time, 'r--', 'LineWidth', 1);
-% plot(Vsup, Time, 'r--', 'LineWidth', 1);
-% axis tight; grid on; box on; set(gca, 'YDir', 'reverse');
-% xlabel('S-wave velocity (km/s)'); 
-% subplot(133)
-% plot(Rho, Time, 'k', 'LineWidth', 2);
-% hold on
-% plot(Rhoprior, Time, 'b', 'LineWidth', 1);
-% plot(Rhomap, Time, 'r', 'LineWidth', 2);
-% plot(Rholp, Time, 'r--', 'LineWidth', 1);
-% plot(Rhoup, Time, 'r--', 'LineWidth', 1);
-% axis tight; grid on; box on; set(gca, 'YDir', 'reverse');
-% xlabel('Density (g/cm^3)'); 
+Vpmap = mmap(1:nm);
+Vsmap = mmap(nm+1:2*nm);
+Rhomap = mmap(2*nm+1:end);
+Vplp = mlp(1:nm);
+Vslp = mlp(nm+1:2*nm);
+Rholp = mlp(2*nm+1:end);
+Vpup = mup(1:nm);
+Vsup = mup(nm+1:2*nm);
+Rhoup = mup(2*nm+1:end);
+
+%% Plot results
+figure(2)
+subplot(131)
+plot(Vp, Time, 'k', 'LineWidth', 2);
+hold on;
+plot(Vpprior, Time, 'b', 'LineWidth', 1);
+plot(Vpmap, Time, 'r', 'LineWidth', 2);
+plot(Vplp, Time, 'r--', 'LineWidth', 1);
+plot(Vpup, Time, 'r--', 'LineWidth', 1);
+axis tight; grid on; box on; set(gca, 'YDir', 'reverse');
+xlabel('P-wave velocity (km/s)'); ylabel('Time (s)');
+subplot(132)
+plot(Vs, Time, 'k', 'LineWidth', 2);
+hold on
+plot(Vsprior, Time, 'b', 'LineWidth', 1);
+plot(Vsmap, Time, 'r', 'LineWidth', 2);
+plot(Vslp, Time, 'r--', 'LineWidth', 1);
+plot(Vsup, Time, 'r--', 'LineWidth', 1);
+axis tight; grid on; box on; set(gca, 'YDir', 'reverse');
+xlabel('S-wave velocity (km/s)'); 
+subplot(133)
+plot(Rho, Time, 'k', 'LineWidth', 2);
+hold on
+plot(Rhoprior, Time, 'b', 'LineWidth', 1);
+plot(Rhomap, Time, 'r', 'LineWidth', 2);
+plot(Rholp, Time, 'r--', 'LineWidth', 1);
+plot(Rhoup, Time, 'r--', 'LineWidth', 1);
+axis tight; grid on; box on; set(gca, 'YDir', 'reverse');
+xlabel('Density (g/cm^3)'); 
 
 
 %% Seismic inversion - de Figueiredo and Grana

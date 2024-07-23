@@ -1,4 +1,4 @@
-function sgsim = SeqGaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig)
+function sgsim = SeqGaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig, angles)
 
 % SEQ GAUSSIAN SIMULATION  generates a realization of the random variable 
 % conditioned on the available measurements using Sequential Gaussian
@@ -9,9 +9,10 @@ function sgsim = SeqGaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l
 %       xmean = prior mean
 %       xvar = prior variance
 %       h = distance
-%       l = correlation length
+%       correlation length, 1x1 for isotropic or 3x1 for anisotropic
 %       type = function ype ('exp', 'gau', 'sph')
 %       krig = kriging type (0=simple, 1=ordinary)
+%       angles = angles for anisotropic variogram , 3x1  
 % OUTPUT sgsim = realization
 
 % Written by Dario Grana (August, 2020)
@@ -51,15 +52,20 @@ for i=1:np
     end
     % kriging
     if krig == 0
-        [krigmean, krigvar] = SimpleKriging(pathcoords(i,:), dc, dz, xmean, xvar, l, type);
+        [krigmean, krigvar] = SimpleKriging(pathcoords(i,:), dc, dz, xmean, xvar, l, type, angles);
     else
-        [krigmean, krigvar] = OrdinaryKriging(pathcoords(i,:), dc, dz, xvar, l, type);
+        [krigmean, krigvar] = OrdinaryKriging(pathcoords(i,:), dc, dz, xvar, l, type, angles);
     end
     % realization
+    if krigvar<0
+        krigvar = 0;
+    end
     simval(pathind(i)) = krigmean+sqrt(krigvar)*randn(1);
     % Adding simulated value the vector of conditioning data
     dcoords = [dcoords; pathcoords(i,:)];
     dvalues = [dvalues; simval(pathind(i))]; 
+    %imagesc(simval)
+    %drawnow
 end
 % Assigning the sampled values to the simulation grid
 sgsim(sgsim==-999)=simval;

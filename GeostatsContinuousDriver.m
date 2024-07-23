@@ -27,17 +27,17 @@ plot(xcoords(:,1), xcoords(:,2), 'ks');
 grid on; box on; xlabel('X'); ylabel('Y'); colorbar; caxis([3 4.2]); 
 
 % simple kiging
-[xsk, ~] = SimpleKriging(xcoords, dcoords, dvalues, xmean, xvar, l, type);
+[xsk, ~] = SimpleKriging(xcoords, dcoords, dvalues, xmean, xvar, l, type, [0 0 0]);
 
 % ordinary kiging
-[xok, ~] = OrdinaryKriging(xcoords, dcoords, dvalues, xvar, l, type);
+[xok, ~] = OrdinaryKriging(xcoords, dcoords, dvalues, xvar, l, type, [0 0 0]);
 
 % Gaussian simulation
 krig = 0;
 nsim = 100;
 gsim = zeros(nsim,1);
 for i=1:nsim
-    gsim(i) = GaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig);
+    gsim(i) = GaussianSimulation(xcoords, dcoords, dvalues, xmean, xvar, l, type, krig, [0 0 0]);
 end
 
 % plot results
@@ -88,7 +88,7 @@ krig = 1;
 nsim = 3;
 sgsim = zeros(size(X,1),size(X,2),nsim);
 for i=1:nsim
-    sim = SeqGaussianSimulation(xcoords, dcoords, dz, zmean, zvar, l, type, krig);
+    sim = SeqGaussianSimulation(xcoords, dcoords, dz, zmean, zvar, l, type, krig, [0 0 0]);
     sgsim(:,:,i) = reshape(sim,size(X,1),size(X,2));
 end
 
@@ -144,7 +144,7 @@ grid on; box on; xlabel('X'); ylabel('Y'); colorbar; caxis([2000 2800]);
 set(gca, 'YDir', 'reverse')
 axis([min(dcoords(:,1)) max(dcoords(:,1)) min(dcoords(:,2)) max(dcoords(:,2)) ])
 
-[xok_grid, v_grid] = Kriging_options(xcoords, dcoords, dz, zvar, l, type);
+[xok_grid, v_grid] = Kriging_options(xcoords, dcoords, dz, zvar, l, type, krig, [0 0 0]);
 
 xok_grid = reshape(xok_grid, size(X));
 v_grid = reshape(v_grid, size(X));
@@ -172,7 +172,7 @@ J = 2 * size(X,2);
 
 noise = randn(I,J);
 
-[correlation_function] = construct_correlation_function(l, l, noise, type, 0);
+[correlation_function] = construct_correlation_function(noise, 15, type, [0 0 0]);
 [ simulation ] = FFT_MA_3D( correlation_function, noise );
 
 % croping the simulation to avoid periodicity
@@ -204,8 +204,8 @@ reference_variables = [reshape(reference_models(1,:,:),I*J,1) reshape(reference_
 [reference_variables] = extend_dateset_KDE(reference_variables,2,0.05);
 
 % Run DMS 
-grid_size = 0.05; 
-range = 20;
+cell_size = 0.05; 
+l = 20;
 n_simulations = 1;
 
 % Number of conditional points
@@ -214,7 +214,7 @@ cond_value_ = cond_value(1:n_cond_points ,:);
 cond_pos_ = cond_pos(1:n_cond_points ,:);
 
 % condicional DMS
-[simulations_all_dms] = DMS(I,J, range, type, grid_size, reference_variables, cond_pos_, cond_value_, n_simulations);
+[simulations_all_dms] = DMS(I,J, l, type, [0 0 0], cell_size, reference_variables, cond_pos_, cond_value_, n_simulations);
 simulation_dms = simulations_all_dms{1};
 
 

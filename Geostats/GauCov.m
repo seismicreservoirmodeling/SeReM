@@ -8,5 +8,5 @@ function C = GauCov(h,l)
 % Written by Dario Grana (August, 2020)
 
 % covariance function
-C = exp(-3*h.^2/l.^2);
+C = exp( -3 * h.^2 ./ l.^2 );
 

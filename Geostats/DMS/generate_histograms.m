@@ -1,4 +1,4 @@
-function [] = generate_histograms(logs)
+function [] = generate_histograms(logs, coloraxis,names)
     figure;
     plot_size_x = size(logs,2);
     ind = 0;
@@ -11,15 +11,24 @@ function [] = generate_histograms(logs)
             else
                 histogram2(logs(:,j),logs(:,i),'FaceColor','flat' , 'EdgeAlpha',0) ;
                 view([0 90])
-            end
-
+                if nargin>1
+                    caxis(coloraxis)
+                end
+            end            
             if  i == plot_size_x
-                xlabel({'Z_', j})
+                if nargin>2
+                    xlabel(names{j}, 'FontSize', 12)
+                else
+                    xlabel({'Z_', j})
+                end
             end
             if j == 1
-                ylabel({'Z_', i})
+                if nargin>2
+                    ylabel(names{i}, 'FontSize', 12)
+                else
+                    ylabel({'Z_', i})
+                end
             end
-
         end
     end
 end

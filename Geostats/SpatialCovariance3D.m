@@ -1,4 +1,4 @@
-function C = SpatialCovariance2D(lmin, lmax, azim, theta, h, type)
+function C = SpatialCovariance3D(l, angles, theta, gamma, h, type)
 
 % SPATIAL COVARIANCE 2D computes the 2D anisotropic spatial covariance 
 % function 
@@ -15,10 +15,10 @@ function C = SpatialCovariance2D(lmin, lmax, azim, theta, h, type)
 % covariance function
 switch type
     case 'exp'
-        C = ExpCov(h, RadialCorrLength(lmin, lmax, azim, theta));    
+        C = ExpCov(h, RadialCorrLength(l, angles, theta, gamma));    
     case 'gau'
-        C = GauCov(h, RadialCorrLength(lmin, lmax, azim, theta));
+        C = GauCov(h, RadialCorrLength(l, angles, theta, gamma));
     case 'sph'
-        C = SphCov(h, RadialCorrLength(lmin, lmax, azim, theta));
+        C = SphCov(h, RadialCorrLength(l, angles, theta, gamma));
 end
         

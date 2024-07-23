@@ -1,4 +1,4 @@
-function [xsk, xvarsk] = SimpleKriging(xcoord, dcoords, dvalues, xmean, xvar, l, type)
+function [xsk, xvarsk] = SimpleKriging(xcoord, dcoords, dvalues, xmean, xvar, l, type, angles)
 
 % SIMPLE KRIGING computes the simple kriging estimate and variance 
 % INPUT xcoord = coordinates of the location for the estimation (1, ndim)
@@ -7,19 +7,38 @@ function [xsk, xvarsk] = SimpleKriging(xcoord, dcoords, dvalues, xmean, xvar, l,
 %       xmean = prior mean
 %       xvar = prior variance
 %       h = distance
-%       l = correlation length
+%       l = correlation length, 1x1 for isotropic or 3x1 for anisotropic
 %       type = function ype ('exp', 'gau', 'sph')
+%       angles = angles for anisotropic variogram , 3x1  
 % OUTPUT xsk = kriging estimate
 %        xvarsk = kriging variance
 
 % Written by Dario Grana (August, 2020)
 
 % kriging matrix and vector
+nd = size(dcoords,1);
+
+coords = [xcoord; dcoords];
 xdtemp = squareform(pdist([xcoord; dcoords]));
 distvect = xdtemp(2:end,1);
 distmatr = xdtemp(2:end,2:end);
-krigvect = xvar*SpatialCovariance1D(distvect,l,type);
-krigmatr = xvar*SpatialCovariance1D(distmatr,l,type);
+
+% if isotropic
+if length(l) == 1
+    krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,l,type);
+    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,l,type);
+else % if anisotropic
+    % Apply transformation in the coordinate system according to the variogram parameters
+    ROT = rotx(angles(1)) * roty(angles(2)) * rotz(angles(3));
+    coords = (ROT * coords')';       
+    coords = coords./l;
+    
+    xdtemp = squareform(pdist(coords));
+    distvect = xdtemp(2:end,1);
+    distmatr = xdtemp(2:end,2:end);    
+    krigvect(1:nd,1) = xvar*SpatialCovariance1D(distvect,1,type);
+    krigmatr(1:nd,1:nd) = xvar*SpatialCovariance1D(distmatr,1,type);   
+end
 
 % kriging weights
 wkrig = krigmatr\krigvect;
